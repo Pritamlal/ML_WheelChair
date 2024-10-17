@@ -1,0 +1,63 @@
+#define RPWM_1 40
+#define R_EN_1 42
+#define R_IS_1 5
+
+#define LPWM_1 41
+#define L_EN_1 43
+#define L_IS_1 8
+
+
+#define RPWM_2 50 
+#define R_EN_2 52 
+#define R_IS_2 12
+
+#define LPWM_2 51
+#define L_EN_2 53
+#define L_IS_2 A1
+
+#define CW 1
+#define CCW 0
+#define debug 1
+
+#include <RobojaxBTS7960.h>
+RobojaxBTS7960 motor1(R_EN_1,RPWM_1,R_IS_1, L_EN_1,LPWM_1,L_IS_1,debug);
+RobojaxBTS7960 motor2(R_EN_2,RPWM_2,R_IS_2, L_EN_2,LPWM_2,L_IS_2,debug);
+
+void setup() {
+  Serial.begin(115200);
+
+   motor1.begin();
+   motor2.begin();
+
+   motor1.stop();
+   motor2.stop();
+
+}
+
+void loop() {
+    if (Serial.available() > 0) {
+
+        int data = Serial.parseInt();
+
+        if (data != 0) {
+            if (data == 1) {
+                motor1.rotate(100, CW);
+                motor2.rotate(100, CW);
+            } else if (data == 2) {
+                motor1.rotate(100, CCW);
+                motor2.rotate(100, CCW);
+            } else if (data == 3) {
+                motor1.rotate(100, CCW);
+                motor2.rotate(100, CW);
+            } else if (data == 4) {
+                motor1.rotate(100, CW);
+                motor2.rotate(100, CCW);
+            } else if (data == 5) {
+                motor1.stop();
+                motor2.stop();
+            } else {
+                Serial.println("Invalid Command");
+            }
+        }
+    }
+}
